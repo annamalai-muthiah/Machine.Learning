@@ -7,7 +7,7 @@ There are three major steps in machine learning:
 
 <b> Step 1. Data Clean-up </b> This step helps to clean-up irregular and missing values in the data set before conducting further analysis
 
-<b> Step 2. Exploratory Data Analysis </b> Exploring variables of interest in the data set through visualization tools so as to form initial impression of the data set and potential relationship between variables. 
+<b> Step 2. Exploratory Data Analysis </b> Exploring variables of interest in the data set through visualization tools so as to form initial impression of the data set and potential relationships between variables. 
 
 <b> Step 3: Mathematical Model (Machine Learning Model) setup </b> 
 There are two subsets within this step.  
