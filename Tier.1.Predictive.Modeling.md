@@ -1,7 +1,7 @@
 
 # Introduction 
 
-In this article, I explain and demonstrate a few basic principles of machine learning (I call it "Tier 1 of Machine Learning/Predictive Modeling") using the programming language R and the algae data set included in the R code package, DMwR. The variable to be predicted through the model (also called "target variable" or "response variable") is the algae level,  a1.  The other set of variables used in the model are called the "predictor variables" (also called "feature variables", that is, features in the data) that will be part of the mathematical model or function that will predict the Target Variable. 
+In this article, I explain and demonstrate a few basic principles of machine learning (I call it "Tier 1 of Machine Learning/Predictive Modeling") using the programming language R and the algae data set included in the R code package, DMwR. The variable to be predicted by the model (called "target variable" or "response variable") is the algae level,  a1.  The other variables used in the the mathematical model or function to predict the Target Variable are called "predictor variables" (also called "feature variables"). 
 
 There are three major steps in machine learning: 
 
