@@ -65,9 +65,8 @@ str(algae)
 
 
 ```r
-# The following command will effectively summarize the data range.  As can be
-# seen, there are a few missing values indicated by 'Not Available (NA)' symbol in the
-# data
+# The following command will effectively summarize the data range.  
+# As can be seen, there are a few missing values indicated by 'Not Available (NA)' symbol in the data
 summary(algae)
 ```
 
