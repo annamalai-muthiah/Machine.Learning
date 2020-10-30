@@ -360,8 +360,8 @@ Now that outliers have been eliminated from the data, one of the first things to
 
 
 ```r
-# I split the data set into train and test data by a 2:1 ratio Since sampling is
-# random, set.seed() ensures the same sample is drawn each time
+# I split the data set into train and test data by a 2:1 ratio. 
+# Since sampling is random, set.seed() ensures the same sample is drawn each time
 set.seed(0)
 train.rows = sample(1:nrow(algae.clean.2.1), size = round(2/3 * nrow(algae.clean.2)), 
     replace = F)  # 2/3 sample is drawn from the data set to form training data
@@ -371,7 +371,7 @@ algae.clean.2.1.train = algae.clean.2.1[train.rows, ]
 algae.clean.2.1.test = algae.clean.2.1[-train.rows, ]
 ```
 
-Now having removed the outlier, the linear model function (lm) was executed again and the following was the output
+Now that the outlier had been removed, the linear model function (lm) was executed again and the following was the output
 
 ```r
 algae.lm2 = lm(formula = a1 ~ ., data = algae.clean.2.1.train[, 1:12])
@@ -413,7 +413,7 @@ Multiple R-squared:  0.4204,	Adjusted R-squared:  0.3454
 F-statistic: 5.609 on 15 and 116 DF,  p-value: 1.783e-08
 ```
 
-Since we now know only a few variables are useful to create the model, a good next step would be to create a <b>backward stepwise regression model </b>. In other words, this is a step-by-step regression model creation process that gradually eliminates weak variables from the variable set leaving behind only the most effective variables to generate a strong model. The below output shows the gradual winnowing out of the weak variables.
+Since we now know that only a few variables are useful to create the model, a good next step would be to create a <b>backward stepwise regression model </b>. In other words, this is a step-by-step regression model creation process that gradually eliminates weak variables from the variable set leaving behind only the most effective variables to generate a strong model. The below output shows the gradual winnowing out of the weak variables.
 
 ```r
 algae.step = step(algae.lm2)  # it takes as input a linear model object
@@ -521,14 +521,13 @@ a1 ~ season + size + mxPH + NO3 + PO4
 - PO4     1   10772.1 51123 802.61
 ```
 More explanation on the output of **stepwise regression model**:  
-1. As you can see this was a step by step approach. The process starts with all variables in the linear model, then each variable is left out while the other variables are retained in the model and this process is conducted for each variable and the resulting models are ordered based on their increasing AIC values.   
-2. AIC values are based on the degrees of fit of the data achieved by each model. Among the various models, the model with the lowest AIC value is chosen for the next step as lower the AIC value, the better. 
-3. The same process is conducted on the chosen model and this process is carried on till the best model to the next step is same as the starting model at that step. At that point, that last model becomes the optimal linear model and the variables forming that model are the best variables for the model.
+1. As you can see this was a step by step approach. The process starts with all variables in the linear model, then each variable is left out while the other variables are retained to construct the linear model and this process is continued for every variable and the resulting models are ordered based on their increasing AIC values.   
+2. AIC values are based on the degrees of fit of the data achieved by each model. Among the various models, the model with the lowest AIC value is chosen as the optimal model for the next step since lower the AIC value, the better. 
+3. The same process is now conducted on the chosen model and this process carries on till the best model to the next step is same as the starting model at that step. At that point, that last model becomes the optimal linear model and the variables forming that model are the best variables for the model.
 
 
 ```r
-# The summary of the final optimal linear model from the above backward stepwise
-# regression process is extracted as shown below.
+# Summary of the final optimal linear model from the above backward stepwise regression process is shown below.
 summary(algae.step)
 ```
 
@@ -565,18 +564,17 @@ Based on the summary of stepwise regression, the variables that are most useful/
 1. size (small)  
 2. NO3  
 3. PO4
-
+4. mxPH
 
 
 ### Subset Modeling
-It is also a good idea to arrive at the optimal list of variables for generating a model through another approach called "subset modeling". Program code for subset modeling is included in "Leaps", an R code package. Different combinations/subsets of variables are tested by subset modeling approach and the models are arranged in the order of decreasing adjusted Regression Coefficient (R2) values. Once the models are sorted according to their R2 values, the results are shown visually with a clear indication of variables constituting each model. Based on the R2 values,one can narrow down the optimal subset of variables that can produce the best model.
+It is also a good idea to arrive at the optimal list of variables for generating a model through another approach called "subset modeling". Programming code for subset modeling is included in "Leaps", an R code package. Different combinations/subsets of variables are tested by subset modeling approach and the models are then sorted in the order of their decreasing adjusted Regression Coefficient (R2) values. Based on the R2 values of the different models,one can narrow down the optimal subset of variables that can produce the best model.
 
 
 ```r
 library(leaps)
 
-# nbest=10 means 10 best combinations of variables are selected for each model
-# size (model size = # of variables).
+# nbest=10 means 10 best combinations of variables are chosen for each model size (model size = # of variables).
 algae.sub = regsubsets(a1 ~ ., data = algae.clean.2.1.train[, 1:12], nbest = 10)
 
 # plotting the results of subset regression modeling
@@ -585,7 +583,7 @@ plot(algae.sub, scale = "adjr2")
 
 ![](Tier.1.Predictive.Modeling_files/figure-html/subset.modeling-1.png)<!-- -->
 
-The result of subset modeling hint that the following variables are optimal for a linear model to predict algae levels:  
+The results of subset modeling hint that the following variables are optimal for a linear model to predict algae levels:  
 1. size (small)  
 2. mxPH  
 3. mnO2  
@@ -595,14 +593,14 @@ The result of subset modeling hint that the following variables are optimal for 
 
 
 ### Cross-Validation 
-If you want to avoid over-fitting the model during the training phase, there is a neat approach called "Cross-Validation (CV)". The principle of cross-validation is to randomly divide the data in to "m" more or less equally sized data fragments (The value of m" is chosen by the user. The name of the cross-validation approach is then called M-fold CV). The process uses use m-1 data fragments to train the model and then the trained model is tested on the one remaining data fragment to measure the degree of fit for the model. This process is then repeated by cycling through every data fragment and averaging the degrees of fits of the model across all those fragments. In this way, since the model is subjected to rigorous training, we would avoid over-fitting the model and the true accuracy of the model is measured by averaging the model's performance on the various test data fragments.
+If you want to avoid over-fitting the model during the training phase, there is a neat approach called "Cross-Validation (CV)". The principle of cross-validation is to randomly divide the dataset in to "m" roughly equally-sized data fragments (The value of "m" is chosen by the user. The name of the cross-validation approach is then called M-fold CV). The process uses use m-1 data fragments to train the model and then the trained model is tested on the one remaining data fragment to measure the degree of fit for the model. This process is then repeated by cycling through every data fragment and averaging the degrees of fits of the model across all those test fragments. In this way, since the model is subjected to rigorous training, we would avoid over-fitting the model and the true accuracy of the model is measured by averaging the model's performance on the various test data fragments.
 
 Additional programming notes:       
-1. CVlm() is the function to carry out linear model cross validation present in the R code package, DAAG  
+1. CVlm() is the function to carry out linear model cross validation. CVlm() is present in the R code package, DAAG  
 2. The "form.lm" argument in CVlm() stands for linear model formula  
 3. "m" stands for the number of folds of cross validation the user desires.  
 4. The output shows the overall ANOVA table displaying significance of the different variables, the observations used in the different test data fragments (also called "folds"), mean sum of square of errors/residuals for each test data fragment and overall performance, that is, average mean sum of square of errors across all the folds.  
-5. The CV plot shows how well the linear model predicted a1 values matched with the actual a1 values. The closer the points are to the 45 degree line, closer are the predictions to the actual values. Based on the plot generated, there is a lot of disparity between predictions and actual values. 
+5. The CV plot shows how well the linear model predicted a1 values matched with the actual a1 values. The closer the points are to the 45 degree line, closer are the predictions to the actual values. Based on the plot generated, there is a lot of disparity between predicted and actual a1 values. 
 
 
 ```r
@@ -794,16 +792,14 @@ Based on the ANOVA table above, many variables have been selected as significant
 
 
 ### Bootstrapping
-Another way to conduct variable selection is to assess the relative importance of the different variables of the model and estimate how much does a particular variable contribute to the model's overall accuracy/regression coefficient. This is accomplished by a process called "Bootstrapping". The individual contributions of variables to the overall response variance of the model is determined by adding one variable at a time to the model and observing how much improvement it adds to the model's accuracy. This is done by repeating the model construction process many times for each variable ("b" = input from the user denoting how many times to re-sample/bootstrap for each variable) by choosing different orders for the variable in question because it matters when the variable gets added to the model - first, middle (lmg) or last. Therefore different variables are added in different orders to the model with respect to the variable of interest during the "b" bootstraps and the average improvement to a model's accuracy generated by the variable of interest based on when it was introduced to the model (first, lmg or last) is estimated along with a confidence interval and these results for each variable is plotted along with the information of when the variable was inserted into the model. Below code fragment shows how bootstrapping is conducted in R for our current linear model using the algae dataset. 
+Another way to conduct variable selection is to assess the relative importance of the different variables of the model and estimate how much does a particular variable contribute to the model's overall accuracy/regression coefficient. This is accomplished by a process called "Bootstrapping". The individual contributions of variables to the overall response variance of the model are determined by adding one variable at a time to the model and observing how much improvement it adds to the model's accuracy. This is done by repeating the model construction process many times for each variable ("b" = input from the user denoting how many times to re-sample/bootstrap for each variable) by choosing different orders for the variable in question because it matters when the variable gets added to the model - first, middle (lmg) or last. Therefore different variables are added in different orders to the model with respect to the variable of interest during the "b" bootstraps and the average improvement to a model's accuracy generated by the variable of interest based on when it was introduced to the model (first, lmg or last) is estimated along with a confidence interval and these results for each variable is then plotted along with the information of when the variable was inserted into the model. Below code fragment shows how bootstrapping is conducted in R for our current linear model using the algae dataset. 
 
 
 ```r
-library(relaimpo)  # the code package that has the instructions to conduct bootstrapping process.
+library(relaimpo)  # the R code package that has the functions to conduct the bootstrapping process.
 
-# The function boot.relimp in 'relaimpo' package takes as input the linear model
-# that has already been constructed to conduct bootstrap on. # The function also
-# takes as input the different times/types to introduce the variable to the model
-# (first, middle or last)
+# The function boot.relimp in 'relaimpo' package takes as input the linear model that has already been constructed to conduct bootstrap on. 
+# The function also takes as input what times/types to introduce the variables into the model (first, middle or last)
 
 algae.boot = boot.relimp(b = 100, algae.lm2, type = c("lmg", "first", "last"))
 
@@ -815,7 +811,7 @@ The plot above shows the relative contribution of each variable to the overall l
 
 
 # Conclusion
-Having understood the data well due to preliminary analysis and a few variable selection techniques, I select the following list of  variables to be used for developing a model in Step 3.2, which will be covered in the next article, "Tier 2 of Predictive Modeling":  
+Having understood the data well due to preliminary analysis and a few variable selection techniques, I select the following list of variables to be used for developing a model in Step 3.2, which will be covered in an another article, "Tier 2 of Predictive Modeling":  
 <b>
 1.size (small)  
 2.mxPH  
