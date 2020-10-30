@@ -11,30 +11,30 @@ There are three major steps in machine learning:
 
 <b> Step 3: Mathematical Model (Machine Learning Model) setup </b> 
 There are two subsets within this step.  
-<i>Step 3.1. Variable Selection Step.</i> Since there are many variables in the data, it is not possible to include all of them in the mathematical model.It is necessary to get a list of the most important variable that can then be used to form the model. This step is called "variable selection" step. One way is to make a linear regression model. There are few other methods you could use for variable selection step - bootstrapping, cross validation, stepwise and subset regression. These concepts are discussed in more detail below.  
-<i>Step 3.2.</i> Construction of predictive modeling.
+<i>Step 3.1. Variable Selection Step.</i> Since there are usually many variables in the dataset, it is not possible to include all of them in the mathematical model.It is necessary to get a list of the most important variables that can then be used to form the model. This step is called "variable selection" step. One way is to make a linear regression model. There are few other methods you could use for variable selection step as well- bootstrapping, cross validation, stepwise and subset regression. These concepts are discussed in more detail below.  
+<i>Step 3.2.Construction of the predictive/mathematical model.</i> 
 
-This article's focus will be on Steps 1 to 3.1. I will post another article to focus on Step 3.2 since it a big topic.
+This article's focus will be on Steps 1 to 3.1. I will post another article focusing primarily on Step 3.2 since it a massive topic on its own.
 
 # How to set up the data and code packages in R?
 
-As mentioned above, code package not only contain useful code fragments made available but also contains datasets within them. 
-As stated above, DMwE package contains algae data set. The below code fragment shows how to install and attach the package to your R environment.
+As mentioned above, code packages in R not only contain useful programming functions within them but also datasets. 
+As stated above, DMwR package contains algae data set. The below code fragment shows how to install and attach the package to your R environment.
 
 
 ```r
 # install.packages('DMwR', dependencies=TRUE)
 library(DMwR)
 ```
-There are additional packages such as lattice, grids etc. that will get installed alongside DMwR
+There are additional packages such as lattice, grids etc. that will get automatically installed alongside DMwR
 
 ## Step 1. Clean-up dataset
 
-*** The goal of this step is to conduct Summary of dataset to expose NA and other irregular characters in the data set ***
+*** The goal of this step is to conduct a summary of the dataset to expose NA and other irregular characters contained in it ***
 
-The following str() command displays the data types (numerical/float, integer, categorical, string etc.) of variables well. 
-'data.frame' is a special matrix or a table that can contain different data types together.
-The data set consists of 3 categorical variables (also called the "factor" data type in R - season, size, speed) and 15 numerical variables.
+The following str() command displays the data types (numerical/float, integer, categorical/factor, string etc.) of variables. 
+'data.frame' is a special matrix or a table that can contain disparate data types together.
+The current algae data set contains 3 categorical variables (also called the "factor" data type in R - season, size, speed) and 15 numerical variables.
 
 
 ```r
@@ -66,7 +66,7 @@ str(algae)
 
 ```r
 # The following command will effectively summarize the data range.  As can be
-# seen, there are a few missing values indicated by 'Not Available (NA)' in the
+# seen, there are a few missing values indicated by 'Not Available (NA)' symbol in the
 # data
 summary(algae)
 ```
@@ -114,14 +114,14 @@ summary(algae)
                  
 ```
 
-Now that missing values (NAs) have been located in the dataset, it is time to address them because it will hinder model estimation  
+Now that the missing values (NAs) have been located in the dataset, it is time to address them because they will hinder further data analysis.  
 <b> Step# 1.1: Remove observations in the data that have "many" missing values </b>  
-In this example, I set the criterion for "many" to be >=20% values to be missing values)  
+In this example, I have set the criterion for "many" to be >=20% values to be missing.  
 <b> Step# 1.2:  Impute potential values for the missing values from 'neighboring' observations </b>  
-'Neighboring' observation to a given observation is defined in terms of their numerical correlations.
+'Neighboring' observation to a given observation is defined in terms of their numerical correlation.
 
 Step 1.1: Removing observations with too "many" missing values.   
-I define them as "non-ideal.observations".manyNAs is a function in the DMwR code package that helps to identify the non-ideal observations, observations that have 20% or more # values to be missing. The function accepts algae (the dataset/dataframe) as input and 20% is encoded as 0.2 in the formula of the manyNAs function.manyNAs output the row numbers/IDs of "non-ideal.observations" in the dataframe.
+I define them as "non-ideal.observations". manyNAs is a function in the DMwR code package that helps to identify the non-ideal observations, observations that have 20% or more # values to be missing. The function accepts algae (the dataset/dataframe) as input and 20% is encoded as 0.2 in the formula of the manyNAs function. manyNAs output the row numbers/IDs of "non-ideal.observations" in the dataframe.
 
 ```r
 # Displays a list of non-ideal observations
@@ -141,14 +141,14 @@ Step 1.2: Imputation
 There are different type of imputation. The type I use here is called K Nearest Neighbor Imputation (KNN Imputation).   
 KNN Imputation fills in the missing values by drawing on values of the K 'nearest neighbors' defined above. K is a value supplied by the user denoting the number of nearest neighbors to be used for missing value inference. For example, k=5, 10 etc.   
 This process in R is accomplished by a function named "knnImputation". meth describes the kind of method used for inference. In this example, the method of choice is median and k=10.  
-In other words, for every missing value, this method will choose the 10 nearest observations and the missing value would be estimated as their median values. The cleaned up data is stored in a new dataframe object named 'algae.clean.2' 
+In other words, for every missing value, this method will choose the 10 nearest observations and the missing value would be estimated as their median values. The cleaned up data is then stored in a new dataframe object named 'algae.clean.2' 
 
 ```r
 # Imputing to infer missing values
 algae.clean.2 = knnImputation(algae.clean, k = 10, meth = "median")
 ```
 
-Now that missing value issue has been addressed using knnImputation, we can confirm it through using summary function if NA values have been replaced
+Now that missing value issue has been addressed using knnImputation, we can confirm it through using summary function if NA values have been replaced.
 
 ```r
 # Checking for missing observations
@@ -194,7 +194,7 @@ summary(algae.clean.2)
 ```
 
 ```r
-# yup, solved.
+# yup, solved. I don't see NA's listed for any variable anymore.
 ```
 
 ***************************************** End of Step 1. Clean-up dataset ***********************************************
@@ -202,7 +202,7 @@ summary(algae.clean.2)
 ## Step 2. Exploratory Data Analysis (EDA)
 Since the data has been cleaned-up, we can now conduct some preliminary exploratory data analysis to understand the relationships between variables in the data set. 
 
-The plot below shows that, of the 200 observations, slightly over 50% observations have target variable,a1 level, is between 0-10 while the remaining observations' a1 levels are spread between 10-100
+The plot below shows that, of the 200 observations, slightly over 50% observations have target variable,a1 level, between 0-10 while the remaining observations' a1 levels are spread between 10-100
 
 ```r
 # Histogram (a1 levels).
@@ -218,7 +218,7 @@ ggplot(algae.clean.2, aes(x = a1)) + geom_histogram(binwidth = 10, fill = "grey"
 
 
 
-It appears the variable "size" has a stronger influence on the al level than "season". 
+It appears that the variable "size" has a stronger influence on the al level than "season". 
 
 ```r
 par(mfrow = c(1, 2))  # partition the plot area to accomodate two images
@@ -242,7 +242,7 @@ ggplot(algae.clean.2, aes(x = size, y = a1)) + geom_boxplot() + theme(axis.text.
 
 
 
-It also appears that the speed may not have strong influence on the a1 level
+It also appears that the speed may not have as strong a influence on the a1 level
 
 ```r
 # Density plot
@@ -255,8 +255,8 @@ ggplot(algae.clean.2, aes(x = a1, fill = speed)) + geom_density(alpha = 0.3) + s
 
 
 
-Scatter plot is a good way to quickly scan variable relationship among numerical variables.  
-It appears from the scatterplot below:  
+Scatter plot is a good way to quickly scan variable relationships among numerical variables.  
+It appears from the scatterplot below that:  
 1. mnO2 seems to have a positive relationship with a1.  
 2. OPO4, PO4 and Chla: each have an inverse relationship with a1 
 
@@ -274,7 +274,7 @@ pairs(algae.clean.2[, 4:12])
 As described in the introduction, one of the key steps towards variable selection is to generate a linear regression model based on the variables.  
 
 Notes about algae dataset:
-1. The first 11 columns of the object represent the predictor/feature variables such as season, size, speed, mxPH, mnO2, Cl, NO3, NH4, OPO4, PO4 and chla
+1. The first 11 columns of the dataset represent the predictor/feature variables such as season, size, speed, mxPH, mnO2, Cl, NO3, NH4, OPO4, PO4 and chla
 2. The 12th column represents the target variable, algae level a1. 
 3. In other words, the goal is to predict algae level based on environmental factors and chemical concentrations.
 
