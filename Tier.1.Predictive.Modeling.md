@@ -816,7 +816,7 @@ The plot above shows the relative contribution of each variable to the overall l
 
 
 # Conclusion
-Having understood the data well due to preliminary analysis and a few variable selection techniques, I select the following list of  variables to be used for developing a model in Step 3.2:  
+Having understood the data well due to preliminary analysis and a few variable selection techniques, I select the following list of  variables to be used for developing a model in Step 3.2, which will be covered in the next article:  
 <b>
 1.size (small)  
 2.mxPH  
