@@ -806,7 +806,8 @@ algae.boot = boot.relimp(b = 100, algae.lm2, type = c("lmg", "first", "last"))
 plot(booteval.relimp(algae.boot, sort = TRUE))
 ```
 
-![](Tier.1.Predictive.Modeling_files/figure-html/bootstrapping-1.png)<!-- -->
+![](Tier.1.Predictive.Modeling_files/figure-html/bootstrapping-1.png)<!-- -->  
+
 The plot above shows the relative contribution of each variable to the overall linear model performance (R2 ~ 37%). For example, the variable, PO4, contributes nearly R2 = 25% when added as the first variable to the linear model. On the other hand, the same variable when added last to the model contributes only R2=2% to the model. Based on the above plot, I would choose the following variables to generate a strong model: PO4, oPO4, Cl, NO3, size
 
 
